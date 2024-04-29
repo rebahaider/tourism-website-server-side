@@ -3,7 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // midleware
 
@@ -43,6 +43,38 @@ async function run() {
             const cursor = spotCollection.find();
             const result = await cursor.toArray();
             res.send(result);
+        })
+
+        app.get('/addTourists/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await spotCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.put('/addTourists/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updateSpot = req.body;
+            const spot = {
+                $set: {
+                    photo: updateSpot.photo,
+                    spotName: updateSpot.spotName, countryName: updateSpot.countryName, location: updateSpot.location, shortDescription: updateSpot.shortDescription,
+                    averageCost: updateSpot.averageCost, seasonality: updateSpot.seasonality, travelTime: updateSpot.travelTime, totalVisitorsPerYear: updateSpot.totalVisitorsPerYear
+                }
+            }
+
+            const result = await spotCollection.updateOne(filter, spot, options);
+            res.send(result);
+        })
+
+        app.delete('/addTourists/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await spotCollection.deleteOne(query);
+            res.send(result);
+
         })
 
 
