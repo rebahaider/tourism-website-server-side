@@ -7,7 +7,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // midleware
 
-app.use(cors());
+app.use(cors({origin:["http://localhost:5173","https://assignment-10-client-sid-22892.web.app"]}));
 app.use(express.json());
 
 //touristWebsite
@@ -35,7 +35,6 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
 
         const spotCollection = client.db("spotDB").collection('spot');
 
